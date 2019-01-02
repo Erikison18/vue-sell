@@ -14,11 +14,11 @@
   <div id="app">
     <v-header></v-header>
     <div class="tab">
-      <div class="tab-item">商品</div>
-      <div class="tab-item">评论</div>
-      <div class="tab-item">商家</div>
+      <router-link tag="div" class="tab-item" to="/content">商品</router-link>
+      <router-link tag="div" class="tab-item" to="/comment">评论</router-link>
+      <router-link tag="div" class="tab-item" to="/seller">商家</router-link>
     </div>
-    <div class="content">content</div>
+    <router-view></router-view>
   </div>
 </template>
 
