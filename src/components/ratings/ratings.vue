@@ -4,7 +4,7 @@
 
 <template>
     <div class="comment">
-        comment
+        ratings
     </div>
 </template>
 

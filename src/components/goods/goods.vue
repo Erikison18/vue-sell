@@ -3,8 +3,8 @@
 </style>
 
 <template>
-    <div class="content">
-        content
+    <div class="goods">
+        goods
     </div>
 </template>
 

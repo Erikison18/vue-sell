@@ -1,24 +1,25 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Content from '@/components/content/content'
-import Comment from '@/components/comment/comment'
-import Seller from '@/components/seller/seller'
+import Goods from 'components/goods/goods'
+import Ratings from 'components/ratings/ratings'
+import Seller from 'components/seller/seller'
 
 Vue.use(Router)
 
 export default new Router({
+  linkActiveClass: 'active',
   routes: [
     {
       path: '/',
-      redirect: '/content'
+      redirect: '/goods'
     },
     {
-      path: '/content',
-      component: Content
+      path: '/goods',
+      component: Goods
     },
     {
-      path: '/comment',
-      component: Comment
+      path: '/ratings',
+      component: Ratings
     },
     {
       path: '/seller',
