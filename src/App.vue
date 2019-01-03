@@ -21,7 +21,7 @@
 <template>
   <div id="app">
     <v-header></v-header>
-    <div class="tab border-1px">
+    <div class="tab border-1px" id="div1">
       <div class="tab-item">
         <router-link tag="a" to="/goods">商品</router-link>
       </div>
@@ -39,9 +39,27 @@
 <script>
 import Header from 'components/header/header'
 
+const ERR_OK = 0
+
 export default {
+  data () {
+    return {
+      seller: {}
+    }
+  },
   components: {
     'v-header': Header
+  },
+  created () {
+    this.$http.get('/api/seller').then((res) => {
+      res = res.body
+      if (res.errno === ERR_OK) {
+        this.seller = res.data
+        console.log(this.seller)
+      }
+    }, (error) => {
+      console.log(error)
+    })
   }
 }
 </script>
