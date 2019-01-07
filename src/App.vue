@@ -21,7 +21,7 @@
 <template>
   <div id="app">
     <v-header :seller="seller"></v-header>
-    <div class="tab border-1px" id="div1">
+    <div class="tab border-1px">
       <div class="tab-item">
         <router-link tag="a" to="/goods">商品</router-link>
       </div>
