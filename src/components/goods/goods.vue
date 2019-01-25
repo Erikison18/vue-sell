@@ -100,6 +100,10 @@
             text-decoration line-through
             font-size 10px
             color rgb(147, 153, 159)
+        .cartcontrol-wrapper
+          position absolute
+          right 0
+          bottom 12px
 </style>
 
 <template>
@@ -134,6 +138,9 @@
                   <div class="price">
                     <span class="now">￥{{food.price}}</span><span v-show="food.oldPrice" class="old">￥{{food.oldPrice}}</span>
                   </div>
+                  <div class="cartcontrol-wrapper">
+                    <cartcontrol :food="food" @cartAdd="_drop"></cartcontrol>
+                  </div>
                 </div>
               </li>
             </ul>
@@ -141,18 +148,22 @@
         </ul>
       </div>
       <shopcart :delivery-price="seller.deliveryPrice"
-      :min-price="seller.minPrice"></shopcart>
+      :min-price="seller.minPrice" ref="shortcart"
+      :select-foods="selectFoods"></shopcart>
   </div>
 </template>
 
 <script>
 import BScroll from 'better-scroll'
 import Shopcart from 'components/shopcart/shopcart'
+import Cartcontrol from 'components/cartcontrol/cartcontrol'
+
 const ERR_OK = 0
 
 export default {
   components: {
-    Shopcart
+    Shopcart,
+    Cartcontrol
   },
   props: {
     seller: {
@@ -176,6 +187,17 @@ export default {
         }
       }
       return 0
+    },
+    selectFoods () {
+      let foods = []
+      this.goods.forEach((good) => {
+        good.foods.forEach((food) => {
+          if (food.count) {
+            foods.push(food)
+          }
+        })
+      })
+      return foods
     }
   },
   created () {
@@ -195,12 +217,19 @@ export default {
     })
   },
   methods: {
+    _drop (target) {
+      // 体验优化，异步执行下落动画
+      this.$nextTick(() => {
+        this.$refs.shortcart.drop(target)
+      })
+    },
     _initScroll () {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true
       })
       this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
-        probeType: 3
+        probeType: 3,
+        click: true
       })
       this.foodScroll.on('scroll', (pos) => {
         this.scrollY = Math.abs(Math.round(pos.y))
