@@ -150,7 +150,7 @@
       <shopcart :delivery-price="seller.deliveryPrice"
       :min-price="seller.minPrice" ref="shortcart"
       :select-foods="selectFoods"></shopcart>
-      <food :food="selectedFood"></food>
+      <food :food="selectedFood" ref="food" @cartAdd="_drop"></food>
   </div>
 </template>
 
@@ -261,8 +261,8 @@ export default {
       if (!event._constructed) {
         return
       }
-      console.log(food)
       this.selectedFood = food
+      this.$refs.food.show()
     }
   }
 }
