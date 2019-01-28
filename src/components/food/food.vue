@@ -1,4 +1,6 @@
 <style lang="stylus" scoped>
+@import '~common/stylus/mixin.styl'
+
 .food
   position fixed
   left 0
@@ -101,6 +103,43 @@
       margin-left 18px
       font-size 14px
       color rgb(7, 17, 27)
+    .rating-wrapper
+      padding 0 18px
+      .rating-item
+        position relative
+        padding 16px 0
+        border-1px(rgba(7, 17, 27, 0.1))
+        .user
+          position absolute
+          right 0
+          top 16px
+          font-size 0
+          line-height 12px
+          .name
+            margin-right 6px
+            display inline-block
+            vertical-align top
+            font-size 10px
+            color rgb(147, 153, 159)
+          .avatar
+            border-radius 50%
+        .time
+          margin-bottom 6px
+          line-height 12px
+          font-size 10px
+          color rgb(147, 153, 159)
+        .text
+          line-height 16px
+          font-size 12px
+          color rgb(7, 17, 27)
+          .icon-thumb_up, .icon-thumb_down
+            line-height 16px
+            margin-right 4px
+            font-size 12px
+          .icon-thumb_up
+            color rgb(0, 160, 220)
+          .icon-thumb_down
+            color rgb(147, 153, 159)
 </style>
 
 <template>
@@ -138,7 +177,24 @@
         <div class="rating">
           <h1 class="title">商品评价</h1>
           <ratingselect :desc="desc" :select-type="selectType" :only-content="onlyContent" :ratings="food.ratings"
-          @ratingtype="hide" @content="hide"></ratingselect>
+          @ratingtype="changeType" @content="changeContent"></ratingselect>
+          <div class="rating-wrapper">
+            <ul v-show="food.ratings && food.ratings.length">
+              <li v-for="(rating, index) in food.ratings" :key="index" class="rating-item border-1px" v-show="needShow(rating.rateType, rating.text)">
+                <div class="user">
+                  <span class="name">{{rating.username}}</span>
+                  <img :src="rating.avatar" class="avatar" width="12" height="12">
+                </div>
+                <div class="time">{{rating.rateTime}}</div>
+                <p class="text">
+                  <span :class="{'icon-thumb_up': rating.rateType === 0, 'icon-thumb_down': rating.rateType === 1}"></span>{{rating.text}}
+                </p>
+              </li>
+            </ul>
+            <div v-show="!food.ratings || !food.ratings.length" class="no-rating">
+
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -180,6 +236,28 @@ export default {
     }
   },
   methods: {
+    changeType (type) {
+      this.selectType = type
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
+    },
+    changeContent (onlyContent) {
+      this.onlyContent = onlyContent
+      this.$nextTick(() => {
+        this.scroll.refresh()
+      })
+    },
+    needShow (type, text) {
+      if (this.onlyContent && !text) {
+        return false
+      }
+      if (this.selectType === ALL) {
+        return true
+      } else {
+        return type === this.selectType
+      }
+    },
     show () {
       this.showFlag = true
       this.selectType = ALL

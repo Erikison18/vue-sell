@@ -5,7 +5,7 @@
   .rating-type
     padding 18px 0
     margin 0 18px
-    border-1px(rgba(255, 255, 155, 1))
+    border-1px(rgba(7, 17, 27, 0.1))
     font-size 0
     .block
       display inline-block
@@ -34,18 +34,23 @@
     border-bottom 1px solid rgba(7, 17, 27, 0.1)
     color rgb(147, 153, 159)
     font-size 0
+    &.on
+      .icon-check_circle
+        color #00c850
     .icon-check_circle
       font-size 24px
       margin-right 4px
       display inline-block
+      vertical-align top
     .text
       font-size 12px
       display inline-block
+      vertical-align top
 </style>
 
 <template>
   <div class="ratingselect">
-    <div class="rating-type">
+    <div class="rating-type border-1px">
       <span class="block positive" @click="select(2, $event)"
       :class="{'active': selectType === 2}">{{desc.all}}<span class="count">{{ratings.length}}</span></span>
       <span class="block positive" @click="select(0, $event)"
@@ -111,7 +116,7 @@ export default {
         return
       }
       // this.onlyContent = !this.onlyContent
-      this.$emit('content', this.onlyContent)
+      this.$emit('content', !this.onlyContent)
     }
   }
 }
