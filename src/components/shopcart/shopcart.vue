@@ -302,21 +302,9 @@ export default {
     },
     listShow () {
       if (!this.totalCount) {
-        // this.fold = true
         return false
       }
       let show = !this.fold
-      if (show) {
-        this.$nextTick(() => {
-          if (!this.scroll) {
-            this.scroll = new BScroll(this.$refs.listContent, {
-              click: true
-            })
-          } else {
-            this.scroll.refresh()
-          }
-        })
-      }
       return show
     }
   },
@@ -385,6 +373,26 @@ export default {
       if (ball) {
         ball.show = false
         el.style.display = 'none'
+      }
+    }
+  },
+  watch: {
+    selectedFoods (newFoods, oldFoods) {
+      if (newFoods.length === 0) {
+        this.fold = true
+      }
+    },
+    fold (newFold, oldFold) {
+      if (!newFold) {
+        this.$nextTick(() => {
+          if (!this.scroll) {
+            this.scroll = new BScroll(this.$refs.listContent, {
+              click: true
+            })
+          } else {
+            this.scroll.refresh()
+          }
+        })
       }
     }
   }
