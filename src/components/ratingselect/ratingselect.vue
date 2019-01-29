@@ -108,14 +108,12 @@ export default {
       if (!event._constructed) {
         return
       }
-      // this.selectType = type
       this.$emit('ratingtype', type)
     },
     toggleContent (event) {
       if (!event._constructed) {
         return
       }
-      // this.onlyContent = !this.onlyContent
       this.$emit('content', !this.onlyContent)
     }
   }

@@ -55,6 +55,7 @@ export default {
       res = res.body
       if (res.errno === ERR_OK) {
         this.seller = res.data
+        console.log(this.seller)
       }
     }, (error) => {
       console.log(error)
