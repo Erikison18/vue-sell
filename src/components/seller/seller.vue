@@ -5,11 +5,9 @@
   position absolute
   width 100%
   top 174px
-  bottom 45px
-  display flex
+  left 0
+  bottom 0px
   overflow hidden
-  .seller-content
-    width 100%
   .overview
     padding 18px
     .title
@@ -52,6 +50,23 @@
           color rgb(7, 17, 27)
           .stress
             font-size 20px
+    .favorite
+      position absolute
+      right 11px
+      top 18px
+      text-align center
+      width 50px
+      .icon-favorite
+        display block
+        color #d4d6d9
+        line-height 24px
+        font-size 24px
+        margin-bottom 4px
+        &.active
+          color rgb(240, 20, 20)
+      .text
+        line-height 10px
+        font-size 12px
   .bulletin
     padding 18px 18px 0 18px
     .title
@@ -71,6 +86,9 @@
         padding 16px 12px
         font-size 0
         border-1px(rgba(7, 17, 27, 0.1))
+        &:last-child
+          &::after
+            border none
         .icon
           display inline-block
           width 16px
@@ -92,10 +110,44 @@
         .text
           line-height 16px
           font-size 12px
+  .pics
+    padding 18px
+    .title
+      color rgb(7, 17, 27)
+      margin-bottom 12px
+      line-height 14px
+      font-size 14px
+    .pic-wrapper
+      width 100%
+      overflow hidden
+      white-space nowrap
+      .pic-list
+        font-size 0
+        .pic-item
+          display inline-block
+          margin-right 6px
+          width 120px
+          height 90px
+  .info
+    padding 18px 18px 0 18px
+    color rgb(7, 17, 27)
+    .title
+      padding-bottom 12px
+      line-height 14px
+      font-size 14px
+      border-1px(rgba(7, 17, 27, 0.1))
+    .info-item
+      padding 16px 12px
+      line-height 16px
+      border-1px(rgba(7, 17, 27, 0.1))
+      font-size 12px
+      &:last-child
+        &::after
+          border none
 </style>
 
 <template>
-  <div class="seller">
+  <div class="seller" ref="seller">
     <div class="seller-content">
       <div class="overview">
         <h1 class="title">{{seller.name}}</h1>
@@ -124,6 +176,10 @@
             </div>
           </li>
         </ul>
+        <div class="favorite" @click="toggleFavorite">
+          <span class="icon-favorite" :class="{'active': favorite}"></span>
+          <span class="text">{{favoriteText}}</span>
+        </div>
       </div>
       <split></split>
       <div class="bulletin">
@@ -138,6 +194,24 @@
           </li>
         </ul>
       </div>
+      <split></split>
+      <div class="pics">
+        <h1 class="title">商家实景</h1>
+        <div class="pic-wrapper" ref="wrapper">
+          <ul class="pic-list" ref="list">
+            <li class="pic-item" v-for="(pic, index) in seller.pics" :key="index">
+              <img :src="pic" width="120" height="90">
+            </li>
+          </ul>
+        </div>
+      </div>
+      <split></split>
+      <div class="info">
+        <h1 class="title border-1px">商家信息</h1>
+        <ul>
+          <li class="info-item border-1px" v-for="(item, index) in seller.infos" :key="index">{{item}}</li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -146,6 +220,7 @@
 import Star from 'components/star/star'
 import Split from 'components/split/split'
 import BScroll from 'better-scroll'
+import {saveToLocal, loadFromLocal} from 'common/js/store'
 
 export default {
   components: {
@@ -157,8 +232,59 @@ export default {
       type: Object
     }
   },
+  data () {
+    return {
+      favorite: loadFromLocal(this.seller.id, 'favorite', false)
+    }
+  },
+  computed: {
+    favoriteText () {
+      return this.favorite ? '收藏' : '未收藏'
+    }
+  },
   created () {
     this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this._initScroll()
+    })
+  },
+  watch: {
+    'seller' () {
+      this._initScroll()
+    }
+  },
+  methods: {
+    _initScroll () {
+      if (!this.scroll) {
+        this.scroll = new BScroll(this.$refs.seller, {
+          click: true
+        })
+      } else {
+        this.scroll.refresh()
+      }
+      if (this.seller.pics) {
+        let picWidth = 120
+        let margin = 6
+        let width = (picWidth + margin) * this.seller.pics.length
+        this.$refs.list.style.width = width + 'px'
+        if (!this.picScroll) {
+          this.picScroll = new BScroll(this.$refs.wrapper, {
+            scrollX: true
+          })
+        } else {
+          this.picScroll.refresh()
+        }
+      }
+    },
+    toggleFavorite (event) {
+      if (!event._constructed) {
+        return
+      }
+      this.favorite = !this.favorite
+      saveToLocal(this.seller.id, 'favorite', this.favorite)
+    }
   }
 }
 </script>

@@ -9,10 +9,10 @@ Vue.use(Router)
 export default new Router({
   linkActiveClass: 'active',
   routes: [
-    {
-      path: '/',
-      redirect: '/goods'
-    },
+    // {
+    //   path: '/',
+    //   redirect: '/goods'
+    // },
     {
       path: '/goods',
       component: Goods
